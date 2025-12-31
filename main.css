@@ -12,19 +12,7 @@ label {
     font-size: medium;
 }
 
-    body > div:first-child {
-        margin-top: 5%;
-        margin-right: 10%;
-        margin-bottom: 5%;
-        margin-left: 10%;
-        text-align: center;
-    }
-
 textarea {
     min-height: 125px;
     resize: vertical;
-}
-
-.btn-success {
-    margin-right: 1em;
 }

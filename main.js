@@ -26,10 +26,21 @@ const stopButton = document.querySelector('#stop');
  * Populate voices drop-down.
  */
 function populateVoicesDropDown() {
+    const selectedVoice = voicesDropDown.value;
+
     voicesDropDown.innerHTML = speechSynthesis
         .getVoices()
-        .map(voice => `<option value="${voice.name}">${voice.name}</option>`)
+        .map(voice => `<option value="${voice.name}">${voice.name} (${voice.lang})</option>`)
         .join('');
+
+    // Restore selection if possible
+    if (selectedVoice) {
+         // Check if the previously selected voice is still in the list
+         const voiceExists = [...voicesDropDown.options].some(option => option.value === selectedVoice);
+         if (voiceExists) {
+             voicesDropDown.value = selectedVoice;
+         }
+    }
 }
 
 /**
@@ -43,10 +54,21 @@ function setVoice() {
 }
 
 /**
+ * Update the visual display of the option value.
+ */
+function updateValueDisplay() {
+    const valueDisplay = document.getElementById(`${this.name}-value`);
+    if (valueDisplay) {
+        valueDisplay.textContent = this.value;
+    }
+}
+
+/**
  * Set voice options.
  */
 function setVoiceOptions() {
     speechSynthesisUtterance[this.name] = this.value;
+    updateValueDisplay.call(this);
     toggleSpeakFunctionality();
 }
 
@@ -69,8 +91,21 @@ function toggleSpeakFunctionality(startOver = true) {
 
 // Event listeners.
 
-speechSynthesis.addEventListener('voiceschanged', populateVoicesDropDown);
+if (typeof speechSynthesis !== 'undefined') {
+    speechSynthesis.addEventListener('voiceschanged', populateVoicesDropDown);
+}
+
 voicesDropDown.addEventListener('change', setVoice);
-options.forEach(option => option.addEventListener('change', setVoiceOptions));
-startButton.addEventListener('click', toggleSpeakFunctionality);
+
+options.forEach(option => {
+    option.addEventListener('input', updateValueDisplay);
+    option.addEventListener('change', setVoiceOptions);
+});
+
+startButton.addEventListener('click', () => toggleSpeakFunctionality(true));
 stopButton.addEventListener('click', () => toggleSpeakFunctionality(false));
+
+// Initialize voice list
+if (typeof speechSynthesis !== 'undefined') {
+    populateVoicesDropDown();
+}
