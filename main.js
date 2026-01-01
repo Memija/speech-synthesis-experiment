@@ -109,3 +109,14 @@ stopButton.addEventListener('click', () => toggleSpeakFunctionality(false));
 if (typeof speechSynthesis !== 'undefined') {
     populateVoicesDropDown();
 }
+
+if (typeof module !== 'undefined') {
+    module.exports = {
+        populateVoicesDropDown,
+        setVoice,
+        updateValueDisplay,
+        setVoiceOptions,
+        toggleSpeakFunctionality,
+        speechSynthesisUtterance
+    };
+}
