@@ -46,7 +46,7 @@ describe('Speech Synthesis App', () => {
     `;
 
     // 2. Mock SpeechSynthesis
-    window.speechSynthesis = {
+    globalThis.speechSynthesis = {
       getVoices: jest.fn().mockReturnValue([
         { name: 'Voice 1', lang: 'en-US' },
         { name: 'Voice 2', lang: 'en-GB' }
@@ -58,14 +58,12 @@ describe('Speech Synthesis App', () => {
     };
 
     // Mock SpeechSynthesisUtterance
-    window.SpeechSynthesisUtterance = class {
-      constructor() {
-        this.text = '';
-        this.voice = null;
-        this.pitch = 1;
-        this.rate = 1;
-        this.volume = 1;
-      }
+    globalThis.SpeechSynthesisUtterance = class {
+      text = '';
+      voice = null;
+      pitch = 1;
+      rate = 1;
+      volume = 1;
     };
 
     // 3. Reset modules and load main.js
@@ -101,7 +99,7 @@ describe('Speech Synthesis App', () => {
     dropdown.value = 'Voice 2';
 
     // Update mock to remove Voice 2
-    window.speechSynthesis.getVoices.mockReturnValue([
+    globalThis.speechSynthesis.getVoices.mockReturnValue([
         { name: 'Voice 1', lang: 'en-US' },
         { name: 'Voice 3', lang: 'en-CA' }
     ]);
@@ -126,8 +124,8 @@ describe('Speech Synthesis App', () => {
     main.setVoice.call(dropdown);
 
     expect(main.speechSynthesisUtterance.voice.name).toBe('Voice 2');
-    expect(window.speechSynthesis.cancel).toHaveBeenCalled();
-    expect(window.speechSynthesis.speak).toHaveBeenCalledWith(main.speechSynthesisUtterance);
+    expect(globalThis.speechSynthesis.cancel).toHaveBeenCalled();
+    expect(globalThis.speechSynthesis.speak).toHaveBeenCalledWith(main.speechSynthesisUtterance);
   });
 
   test('setVoiceOptions updates utterance property and display', () => {
@@ -138,8 +136,8 @@ describe('Speech Synthesis App', () => {
 
       expect(main.speechSynthesisUtterance.pitch).toBe('1.5');
       expect(document.getElementById('pitch-value').textContent).toBe('1.5');
-      expect(window.speechSynthesis.cancel).toHaveBeenCalled();
-      expect(window.speechSynthesis.speak).toHaveBeenCalledWith(main.speechSynthesisUtterance);
+      expect(globalThis.speechSynthesis.cancel).toHaveBeenCalled();
+      expect(globalThis.speechSynthesis.speak).toHaveBeenCalledWith(main.speechSynthesisUtterance);
   });
 
   test('setVoiceOptions updates rate property and display', () => {
@@ -168,20 +166,20 @@ describe('Speech Synthesis App', () => {
 
       main.toggleSpeakFunctionality(true);
 
-      expect(window.speechSynthesis.cancel).toHaveBeenCalled();
+      expect(globalThis.speechSynthesis.cancel).toHaveBeenCalled();
       expect(main.speechSynthesisUtterance.text).toBe("Hello World");
-      expect(window.speechSynthesis.speak).toHaveBeenCalledWith(main.speechSynthesisUtterance);
+      expect(globalThis.speechSynthesis.speak).toHaveBeenCalledWith(main.speechSynthesisUtterance);
   });
 
   test('toggleSpeakFunctionality(false) just cancels', () => {
       // Clear previous calls from initialization
-      window.speechSynthesis.speak.mockClear();
-      window.speechSynthesis.cancel.mockClear();
+      globalThis.speechSynthesis.speak.mockClear();
+      globalThis.speechSynthesis.cancel.mockClear();
 
       main.toggleSpeakFunctionality(false);
 
-      expect(window.speechSynthesis.cancel).toHaveBeenCalled();
-      expect(window.speechSynthesis.speak).not.toHaveBeenCalled();
+      expect(globalThis.speechSynthesis.cancel).toHaveBeenCalled();
+      expect(globalThis.speechSynthesis.speak).not.toHaveBeenCalled();
   });
 
   test('Event listeners are attached and working', () => {
@@ -190,14 +188,14 @@ describe('Speech Synthesis App', () => {
       const dropdown = document.querySelector('[name="voice"]');
 
       // Test start button
-      window.speechSynthesis.speak.mockClear();
+      globalThis.speechSynthesis.speak.mockClear();
       startButton.click();
-      expect(window.speechSynthesis.speak).toHaveBeenCalled();
+      expect(globalThis.speechSynthesis.speak).toHaveBeenCalled();
 
       // Test stop button
-      window.speechSynthesis.cancel.mockClear();
+      globalThis.speechSynthesis.cancel.mockClear();
       stopButton.click();
-      expect(window.speechSynthesis.cancel).toHaveBeenCalled();
+      expect(globalThis.speechSynthesis.cancel).toHaveBeenCalled();
 
       // Test dropdown change
       dropdown.value = 'Voice 1';
