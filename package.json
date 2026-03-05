@@ -20,6 +20,6 @@
   "homepage": "https://github.com/Memija/speech-synthesis-experiment#readme",
   "devDependencies": {
     "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^30.2.0"
   }
 }
